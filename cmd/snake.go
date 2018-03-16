@@ -96,7 +96,7 @@ func updateDirection(snake *Snake) {
 }
 
 func (snake *Snake) isInBounds(board *Board) bool {
-	if snake.Segments[0].X+snake.Direction.X < len(board.Grid) && snake.Segments[0].Y+snake.Direction.Y < len(board.Grid[0]) {
+	if (snake.Segments[0].X+snake.Direction.X < len(board.Grid) && snake.Segments[0].Y+snake.Direction.Y < len(board.Grid[0])) && (snake.Segments[0].X+snake.Direction.X >= 0 && snake.Segments[0].Y+snake.Direction.Y >= 0) {
 		return true
 	}
 	return false
@@ -182,11 +182,9 @@ func (snake *Snake) eatFood(board *Board) {
 	}
 	if !snake.isInBounds(board) {
 		endGame()
-	}
-	if board.Grid[target.X][target.Y] == 's' {
+	} else if board.Grid[target.X][target.Y] == 's' {
 		endGame()
-	}
-	if board.Grid[target.X][target.Y] == 'f' {
+	} else if board.Grid[target.X][target.Y] == 'f' {
 		board.Grid[target.X][target.Y] = ' '
 		snake.addSegment()
 		board.addFood()
