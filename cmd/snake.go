@@ -72,7 +72,7 @@ func (snake *Snake) updateDirection() {
 		switch ev := term.PollEvent(); ev.Type {
 		case term.EventKey:
 			if ev.Key == term.KeyCtrlC {
-				endGame()
+				endGame(snake)
 			}
 			if ev.Key == term.KeyCtrlP {
 				pauseGame()
@@ -145,8 +145,9 @@ func main() {
 	refreshScreen(RefreshRate, board, snake)
 }
 
-func endGame() {
+func endGame(s *Snake) {
 	fmt.Println("Game Over")
+        printScore(s)
 	os.Exit(2)
 }
 
@@ -171,7 +172,7 @@ func (snake *Snake) addSegment() {
 		snake.Segments[len(snake.Segments)-1] = Location{}
 	}
 	if lenSnake == SnakeCapacity {
-		endGame()
+		endGame(snake)
 	}
 }
 
@@ -181,9 +182,9 @@ func (snake *Snake) eatFood(board *Board) {
 		Y: snake.Segments[0].Y + snake.Direction.Y,
 	}
 	if !snake.isInBounds(board) {
-		endGame()
+		endGame(snake)
 	} else if board.Grid[target.X][target.Y] == 's' {
-		endGame()
+		endGame(snake)
 	} else if board.Grid[target.X][target.Y] == 'f' {
 		board.Grid[target.X][target.Y] = ' '
 		snake.addSegment()
