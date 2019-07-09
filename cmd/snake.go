@@ -67,12 +67,12 @@ func initializeSnake() Snake {
 	return mySnake
 }
 
-func updateDirection(snake *Snake) {
+func (snake *Snake) updateDirection() {
 	for {
 		switch ev := term.PollEvent(); ev.Type {
 		case term.EventKey:
 			if ev.Key == term.KeyCtrlC {
-				endGame()
+				endGame(snake)
 			}
 			if ev.Key == term.KeyCtrlP {
 				pauseGame()
@@ -85,11 +85,11 @@ func updateDirection(snake *Snake) {
 				snake.Direction.Y = -1
 				snake.Direction.X = 0
 			case term.KeyArrowUp:
+				snake.Direction.Y = 0
 				snake.Direction.X = -1
-				snake.Direction.Y = 0
 			case term.KeyArrowDown:
-				snake.Direction.X = 1
 				snake.Direction.Y = 0
+				snake.Direction.X = 1
 			}
 		}
 	}
@@ -145,8 +145,9 @@ func main() {
 	refreshScreen(RefreshRate, board, snake)
 }
 
-func endGame() {
+func endGame(s *Snake) {
 	fmt.Println("Game Over")
+        printScore(s)
 	os.Exit(2)
 }
 
@@ -171,7 +172,7 @@ func (snake *Snake) addSegment() {
 		snake.Segments[len(snake.Segments)-1] = Location{}
 	}
 	if lenSnake == SnakeCapacity {
-		endGame()
+		endGame(snake)
 	}
 }
 
@@ -181,9 +182,9 @@ func (snake *Snake) eatFood(board *Board) {
 		Y: snake.Segments[0].Y + snake.Direction.Y,
 	}
 	if !snake.isInBounds(board) {
-		endGame()
+		endGame(snake)
 	} else if board.Grid[target.X][target.Y] == 's' {
-		endGame()
+		endGame(snake)
 	} else if board.Grid[target.X][target.Y] == 'f' {
 		board.Grid[target.X][target.Y] = ' '
 		snake.addSegment()
@@ -203,8 +204,15 @@ func printScore(snake *Snake) {
 }
 
 func (board *Board) print() {
+	for i := 0; i < GridSize; i++ {
+		fmt.Print("##")
+	}
+	fmt.Println()
 	for i := 0; i < len(board.Grid); i++ {
 		for j := 0; j < len(board.Grid[0]); j++ {
+			if j == 0 {
+				fmt.Print("#")
+			}
 			if board.Grid[i][j] == 's' {
 				fmt.Print(" o")
 			} else if board.Grid[i][j] == 'f' {
@@ -213,15 +221,20 @@ func (board *Board) print() {
 				fmt.Print("  ")
 			}
 		}
+		fmt.Print("#")
 		fmt.Println()
 	}
+	for i := 0; i < GridSize; i++ {
+		fmt.Print("##")
+	}
+	fmt.Println()
 }
 
 func refreshScreen(refreshRate time.Duration, board Board, snake Snake) {
+	go snake.updateDirection()
 	for true {
 		if !IsPaused {
 			fmt.Printf("x:%d, y:%d\n", snake.Segments[0].X, snake.Segments[0].Y)
-			go updateDirection(&snake)
 			snake.act(&board)
 			printScore(&snake)
 			board.print()
