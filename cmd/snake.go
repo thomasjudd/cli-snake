@@ -147,8 +147,8 @@ func main() {
 
 func endGame(s *Snake) {
 	fmt.Println("Game Over")
-        printScore(s)
-	os.Exit(2)
+	printScore(s)
+	os.Exit(0)
 }
 
 func pauseGame() {
@@ -245,7 +245,7 @@ func refreshScreen(refreshRate time.Duration, board Board, snake Snake) {
 }
 
 func clear() {
-	cmd := exec.Command("cmd", "/c", "cls")
+	cmd := exec.Command("/usr/bin/clear")
 	cmd.Stdout = os.Stdout
 	cmd.Run()
 }
