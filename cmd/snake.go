@@ -19,6 +19,9 @@ const SnakeCapacity = GridSize*GridSize - 1
 //RefreshRate is the frequency with which we redraw the grid
 const RefreshRate = 100 * time.Millisecond
 
+//ScorePerSegment is the number of points per snake segment
+const ScorePerSegment = 10
+
 //IsPaused is a flag to determine if the game is paused or not
 var IsPaused = false
 
@@ -200,7 +203,7 @@ func (snake *Snake) act(board *Board) {
 }
 
 func printScore(snake *Snake) {
-	fmt.Printf("Score: %d\n", 100*(len(snake.Segments)-1))
+	fmt.Printf("Score: %d\n", ScorePerSegment*(len(snake.Segments)-1))
 }
 
 func (board *Board) print() {
