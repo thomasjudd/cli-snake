@@ -2,5 +2,5 @@
 
 #hack to fix terminal after game exits
 
-go run cmd/snake.go
+go run snake.go
 /bin/stty sane
